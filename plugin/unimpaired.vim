@@ -263,10 +263,14 @@ nnoremap <silent> yO  :call <SID>setup_paste()<CR>O
 " Put {{{1
 
 function! s:putline(how, map) abort
-  let [body, type] = [getreg(v:register), getregtype(v:register)]
-  call setreg(v:register, body, 'l')
-  exe 'normal! "'.v:register.a:how
-  call setreg(v:register, body, type)
+  let reg = v:register
+  if reg ==# '_'
+    let reg = EasyClip#GetDefaultReg()
+  end
+  let [body, type] = [getreg(reg), getregtype(reg)]
+  call setreg(reg, body, 'l')
+  exe 'normal! "'.reg.a:how
+  call setreg(reg, body, type)
   if type !=# 'V'
     silent! call repeat#set("\<Plug>unimpairedPut".a:map)
   endif
